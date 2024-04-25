@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">-->
+    <style>
+        #image {
+            margin-top: 50px;
+            box-shadow: 5px 5px 5px 5px gray;
+            width: 60px;
+            padding: 20px;
+            font-weight: 400;
+            padding-bottom: 0px;
+            height: 40px;
+            user-select: none;
+            text-decoration: line-through;
+            font-style: italic;
+            font-size: x-large;
+            border: red 2px solid;
+            margin-left: 100px;
+        }
+
+        #user-input {
+    
+            align-items: center;
+            box-shadow: 5px 5px 5px 5px gray;
+            width: auto;
+            margin-right: 10px;
+            padding: 16px;
+            padding-top: 16px;
+            height: 40px;
+            
+        }
+
+        input {
+            
+            border: 1px black solid;
+            padding: 10px;
+        }
+
+        .inline {
+            display: inline-block;
+        }
+
+        #btn {
+            padding: 7px;
+            box-shadow: 5px 5px 5px grey;
+            color: aqua;
+            margin: 37px;
+            background-color: black;
+        }
+    </style>
+    <script>
+        let captcha;
+        let startTime;
+
+        function generate() {
+            // Clear old input
+            document.getElementById("submit").value = "";
+
+            // Access the element to store the generated captcha
+            captcha = document.getElementById("image");
+            let uniquechar = "";
+
+            const randomchar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            // Generate captcha for length of 5 with random character
+            for (let i = 0; i < 5; i++) {
+                uniquechar += randomchar.charAt(Math.floor(Math.random() * randomchar.length));
+            }
+
+            // Store generated input
+            captcha.innerHTML = uniquechar;
+
+             // Record the start time when the captcha is generated
+             startTime = new Date().getTime();
+        }
+
+        function printmsg() {
+            const usr_input = document.getElementById("submit").value;
+            
+            // Calculate typing speed
+            const endTime = new Date().getTime();
+            const elapsedTime = endTime - startTime;
+            const typingSpeed = Math.round((captcha.innerHTML.length / (elapsedTime / 1000)) * 60); // Characters per minute
+
+            // Store timestamp and typing speed using SQL (you need backend for this)
+            // Here's a dummy example using JavaScript alert
+            const timestamp = new Date().toISOString();
+            alert("Timestamp: " + timestamp + "\nTyping Speed: " + typingSpeed + " characters per minute");
+
+            // Check whether the input is equal to generated captcha or not
+            if (usr_input == captcha.innerHTML) {
+                document.getElementById("key").innerHTML = "Matched";
+                generate();
+            } else {
+                document.getElementById("key").innerHTML = "Mismatched";
+                generate();
+            }
+        }
+
+        // Function to handle "Enter" key press
+        function handleKeyPress(event) {
+            if (event.keyCode === 13) { // 13 is the key code for "Enter" key
+                document.getElementById("btn").click(); // Trigger click event of the submit button
+            }
+        }
+        
+    </script>
+</head>
+
+<body onload="generate()">
+    <h1>Keystroke Logging- Captcha Validation</h1>
+    
+    <div id="user-input" class="inline">
+        <input type="text" id="submit" placeholder="Enter Captcha here" name="captchacode" onkeypress="handleKeyPress(event)">
+    </div>
+
+    <div class="inline" onclick="generate()">
+        <i class="fas fa-sync"></i>
+    </div>
+
+    <div id="image" class="inline" selectable="False"></div>
+    <input type="submit" id="btn" onclick="printmsg()" />
+
+    <p id="key"></p>
+    
+</body>
+</html>
